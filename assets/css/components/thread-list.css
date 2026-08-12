@@ -1,0 +1,88 @@
+/* ===== THREAD LIST ===== */
+
+.thread-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid var(--border);
+}
+
+.thread-item {
+	padding: 20px 0;
+	border-bottom: 1px solid var(--border);
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.thread-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.thread-title {
+	color: var(--fg);
+	text-decoration: none;
+	font-size: 15.5px;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+}
+
+.thread-title:hover {
+	color: var(--line);
+}
+
+.thread-item.pinned {
+	border-left: 2px solid var(--line);
+	padding-left: 14px;
+}
+
+.pin-icon {
+	width: 13px;
+	height: 13px;
+	color: var(--line);
+	vertical-align: -2px;
+	margin-right: 2px;
+}
+
+.lock-icon {
+	width: 13px;
+	height: 13px;
+	color: var(--line);
+	vertical-align: -2px;
+	margin-right: 2px;
+}
+
+.unread-dot {
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: var(--line);
+	margin-right: 6px;
+	vertical-align: middle;
+}
+
+.thread-item.unread .thread-meta {
+	color: var(--fg-dim);
+}
+
+.thread-meta {
+	color: var(--fg-muted);
+	font-size: 12.5px;
+}
+
+.excerpt {
+	color: var(--fg-dim);
+	font-size: 13px;
+	line-height: 1.6;
+	margin-top: 4px;
+	overflow-wrap: break-word;
+}
+
+.dot {
+	color: var(--fg-faint);
+	margin: 0 2px;
+}

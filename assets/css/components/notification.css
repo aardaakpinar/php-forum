@@ -1,0 +1,22 @@
+.notification-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.notification-item {
+	padding: 12px;
+	border-bottom: 1px solid var(--border);
+}
+.notification-item.unread {
+	background: rgba(0, 0, 0, 0.03);
+}
+.notification-meta {
+	font-size: 14px;
+}
+
+.notifications-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}

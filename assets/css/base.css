@@ -1,0 +1,80 @@
+/* ===== BASE (orijinal tema tokenlari korunmustur) ===== */
+
+:root {
+	--bg: #050607;
+	--panel: #0b0d0e;
+	--panel-soft: #090a0b;
+	--fg: #ffffff;
+	--fg-dim: #b7bbb8;
+	--fg-muted: #767c78;
+	--fg-faint: #4a504c;
+	--line: #91f2b7;
+	--line-dim: #b7bbb8;
+	--border: #1c2420;
+	--border-strong: #34443b;
+	--danger: #ff6b6b;
+	--danger-bg: rgba(255, 107, 107, 0.08);
+	--danger-border: rgba(255, 107, 107, 0.35);
+	--success: #91f2b7;
+	--success-bg: rgba(145, 242, 183, 0.08);
+	--success-border: rgba(145, 242, 183, 0.35);
+	--shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+    --header-height: 52px;
+	--max: 960px;
+	--font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	min-height: 100dvh;
+	background: var(--bg);
+	color: var(--fg);
+	font-family: var(--font-mono);
+	display: flex;
+	flex-direction: column;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: geometricPrecision;
+}
+
+body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	background: linear-gradient(rgba(145, 242, 183, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(145, 242, 183, 0.018) 1px, transparent 1px), radial-gradient(circle at 50% 0%, rgba(145, 242, 183, 0.09), transparent 34%);
+	background-size:
+		100% 32px,
+		32px 100%,
+		100% 100%;
+	mask-image: linear-gradient(to bottom, #000, rgba(0, 0, 0, 0.6) 45%, transparent);
+	z-index: 0;
+}
+
+a {
+	color: var(--fg);
+}
+
+h1 {
+	font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+	letter-spacing: 0.02em;
+	color: var(--fg);
+}
+
+h2 {
+	letter-spacing: 0.03em;
+	color: var(--fg);
+}
+
+h3 {
+	letter-spacing: 0.02em;
+	color: var(--fg);
+}

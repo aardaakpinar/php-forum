@@ -1,0 +1,40 @@
+/* ===== ALERT ===== */
+
+.alert {
+	border: 1px solid var(--danger-border);
+	background: var(--danger-bg);
+	color: var(--danger);
+	padding: 14px 16px;
+	margin-bottom: 24px;
+	font-size: 13.5px;
+	line-height: 1.7;
+}
+
+.alert p {
+	margin: 0;
+}
+
+.alert p + p {
+	margin-top: 4px;
+}
+
+.alert-success {
+	border-color: var(--success-border);
+	background: var(--success-bg);
+	color: var(--success);
+}
+
+.empty,
+.hint {
+	color: var(--fg-dim);
+	font-size: 13.5px;
+	line-height: 1.7;
+}
+
+.hint {
+	margin-top: 20px;
+}
+
+.hint a {
+	color: var(--line);
+}

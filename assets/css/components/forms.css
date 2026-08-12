@@ -1,0 +1,61 @@
+/* ===== FORMS ===== */
+
+.form-group {
+	margin-bottom: 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.form-group.line {
+	flex-direction: row;
+}
+
+.form-group label {
+	color: var(--fg);
+	font-size: 12.5px;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+.form-group small {
+	color: var(--fg-muted);
+	font-size: 12px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="password"],
+textarea {
+	width: 100%;
+	background: var(--panel);
+	border: 1px solid var(--border-strong);
+	color: var(--fg);
+	font-family: var(--font-mono);
+	font-size: 14px;
+	padding: 12px 14px;
+	outline: none;
+	transition:
+		border-color 0.2s ease,
+		box-shadow 0.2s ease;
+}
+
+textarea {
+	resize: vertical;
+	line-height: 1.7;
+}
+
+input:focus,
+textarea:focus {
+	border-color: var(--line);
+	box-shadow: 0 0 0 3px rgba(145, 242, 183, 0.08);
+}
+
+.md-input {
+	border-left: 2px solid var(--line-dim);
+}
+
+.notifications-actions {
+	margin-bottom: 12px;
+}

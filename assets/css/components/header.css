@@ -1,0 +1,151 @@
+/* ===== HEADER ===== */
+
+header {
+	min-height: var(--header-height);
+	box-sizing: border-box;
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+
+	z-index: 1000;
+
+	padding: 18px clamp(20px, 5vw, 64px);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	border-bottom: 1px solid rgba(145, 242, 183, 0.12);
+	background: rgba(5, 6, 7, 0.88);
+	backdrop-filter: blur(14px);
+}
+
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	text-decoration: none;
+	color: inherit;
+}
+
+.symbol {
+	display: grid;
+	place-items: center;
+	width: 24px;
+	height: 24px;
+	color: var(--fg);
+	font-size: 20px;
+}
+
+.wordmark {
+	font-weight: 700;
+	letter-spacing: 0.13em;
+}
+
+.user-menu {
+	display: inline;
+	position: relative;
+	margin-left: clamp(10px, 2vw, 24px);
+}
+
+.user-toggle {
+	background: none;
+	border: 0;
+	color: var(--fg);
+	cursor: pointer;
+	font: inherit;
+	font-size: 13px;
+	padding: 0;
+}
+
+.user-popup {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: calc(100% + 10px);
+	min-width: 140px;
+	padding: 8px;
+	background: var(--bg);
+	border: 1px solid #333;
+	border-radius: 6px;
+	z-index: 100;
+}
+
+.user-popup a,
+.user-popup button {
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding: 8px;
+	color: var(--fg-dim);
+	font-size: 13px;
+}
+
+.user-popup a {
+	text-decoration: none;
+}
+
+.user-popup button {
+	background: none;
+	border: none;
+	text-align: left;
+	cursor: pointer;
+}
+
+.user-popup a:hover,
+.user-popup button:hover {
+	color: var(--fg);
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.user-menu.open .user-popup {
+	display: block;
+}
+
+.links > a {
+	position: relative;
+	margin-left: clamp(10px, 2vw, 24px);
+	color: var(--fg-dim);
+	text-decoration: none;
+	font-size: 13px;
+	transition: color 0.2s ease;
+}
+
+.links > a::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -8px;
+	height: 1px;
+	background: var(--line);
+	transform: scaleX(0);
+	transform-origin: center;
+	transition: transform 0.2s ease;
+}
+
+.links > a:hover {
+	color: var(--fg);
+}
+
+.links > a:hover::after {
+	transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.symbol {
+		animation: none !important;
+	}
+}
+
+@media (max-width: 680px) {
+	header {
+		padding: 14px 16px;
+	}
+
+	.user-popup a,
+	.user-popup button {
+		font-size: 12px;
+	}
+}
