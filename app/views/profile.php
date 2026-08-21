@@ -1,4 +1,4 @@
-<?php $pageTitle = 'Forum - @' . $profileUser['username']; require __DIR__ . '/../../includes/header.php'; ?>
+<?php $pageTitle = 'Forum @' . $profileUser['username']; require __DIR__ . '/../../includes/header.php'; ?>
 <h1><?= e($profileUser['username']) ?>
     <?php if ($profileUser['role'] === 'admin'): ?><span class="role-badge">[admin]</span><?php endif; ?>
 </h1>

@@ -118,6 +118,22 @@ function str_len_safe(string $s): int
     return function_exists('mb_strlen') ? mb_strlen($s, 'UTF-8') : strlen($s);
 }
 
+function findTitlesByIds(array $ids): array
+{
+    $ids = array_values(array_unique(array_map('intval', $ids)));
+    if ($ids === []) {
+        return [];
+    }
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $stmt = Database::get()->prepare("SELECT id, title FROM threads WHERE id IN ($placeholders)");
+    $stmt->execute($ids);
+    $titles = [];
+    foreach ($stmt->fetchAll() as $row) {
+        $titles[(int)$row['id']] = $row['title'];
+    }
+    return $titles;
+}
+
 function linkify_tags(string $text): string
 {
     $text = preg_replace_callback(
@@ -127,11 +143,21 @@ function linkify_tags(string $text): string
         },
         $text
     );
-    
+
+    $threadIds = [];
+    if (preg_match_all('/(?<![A-Za-z0-9_&])#(\d+)/', $text, $allMatches)) {
+        $threadIds = $allMatches[1];
+    }
+    $threadTitles = $threadIds !== [] ? findTitlesByIds($threadIds) : [];
+
     $text = preg_replace_callback(
-        '/(?<![A-Za-z0-9_])#(\d+)/',
-        static function (array $m): string {
-            return '<a href="' . e(url('thread/' . (int)$m[1])) . '" class="mention">#' . (int)$m[1] . '</a>';
+        '/(?<![A-Za-z0-9_&])#(\d+)/',
+        static function (array $m) use ($threadTitles): string {
+            $id = (int)$m[1];
+            if (!isset($threadTitles[$id])) {
+                return '<a href="' . e(url('thread/' . $id)) . '" class="mention">#' . $id . '</a>';
+            }
+            return '<a href="' . e(url('thread/' . $id)) . '" class="mention">' . e($threadTitles[$id]) . '</a>';
         },
         $text
     );

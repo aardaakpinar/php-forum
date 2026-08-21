@@ -1,4 +1,4 @@
-<?php $pageTitle = 'Forum - #' . $thread['title']; require __DIR__ . '/../../includes/header.php'; ?>
+<?php $pageTitle = 'Forum - ' . $thread['title']; require __DIR__ . '/../../includes/header.php'; ?>
 <div class="thread-header">
 <h1>
     <?php if ((int)$thread['pinned'] === 1): ?><i data-lucide="pin" class="pin-icon"></i><?php endif; ?>
