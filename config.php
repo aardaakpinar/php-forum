@@ -15,7 +15,7 @@ define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
 define('DB_PORT', getenv('DB_PORT') ?: '3306');
 define('DB_NAME', getenv('DB_NAME') ?: 'forum');
 define('DB_USER', getenv('DB_USER') ?: 'forum');
-define('DB_PASS', getenv('DB_PASS') ?: 'guclu-bir-parola');
+define('DB_PASS', getenv('DB_PASS') ?: 'str0ng-p4ssw@rd');
 
 // ---- Güvenli session ayarları (session_start()'tan ÖNCE ayarlanmalı) ----
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
