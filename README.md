@@ -149,13 +149,13 @@ The required PDO driver that allows PHP to communicate with MySQL must be enable
 
 Connection details are read from environment variables in `config.php`. If they are not defined, development-oriented default values are used:
 
-| Variable  | Description          | Default                |
-| --------- | -------------------- | ---------------------- |
-| `DB_HOST` | MySQL server address | `127.0.0.1`            |
-| `DB_PORT` | MySQL port           | `3306`                 |
-| `DB_NAME` | Database name        | `forum`                |
-| `DB_USER` | Username             | `forum`                |
-| `DB_PASS` | Password             | `change_this_password` |
+| Variable  | Description          | Default            |
+| --------- | -------------------- | ------------------ |
+| `DB_HOST` | MySQL server address | `127.0.0.1`        |
+| `DB_PORT` | MySQL port           | `3306`             |
+| `DB_NAME` | Database name        | `forum`            |
+| `DB_USER` | Username             | `forum`            |
+| `DB_PASS` | Password             | `guclu-bir-parola` |
 
 First, create the database and user:
 
