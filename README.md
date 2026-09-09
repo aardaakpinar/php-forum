@@ -19,6 +19,51 @@ Database operations are performed through PDO. It is recommended to run the appl
 
 ---
 
+# Installation and Setup
+
+## Requirements
+
+- PHP 8.1+
+- Apache
+- MySQL 5.7+ / MariaDB 10.3+ (InnoDB and `INSERT ... ON DUPLICATE KEY UPDATE` support are required)
+- `pdo_mysql` extension
+- HTTPS is recommended
+
+The required PDO driver that allows PHP to communicate with MySQL must be enabled for the application to work.
+
+## Database Connection Settings
+
+Connection details are read from environment variables in `config.php`. If they are not defined, development-oriented default values are used:
+
+| Variable  | Description          | Default           |
+| --------- | -------------------- | ----------------- |
+| `DB_HOST` | MySQL server address | `127.0.0.1`       |
+| `DB_PORT` | MySQL port           | `3306`            |
+| `DB_NAME` | Database name        | `forum`           |
+| `DB_USER` | Username             | `forum`           |
+| `DB_PASS` | Password             | `str0ng-p4ssw@rd` |
+
+First, create the database and user:
+
+```sql
+CREATE DATABASE forum CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'forum'@'localhost' IDENTIFIED BY 'str0ng-p4ssw@rd';
+GRANT ALL PRIVILEGES ON forum.* TO 'forum'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+Then configure the environment variables (e.g., using Apache `SetEnv` or system environment variables) and run the application. The tables are automatically created by `config.php` on the first request in an idempotent manner, so manually importing a schema is not required.
+
+## Server Environment
+
+It is recommended to run the application on a real web server such as Apache.
+
+PHP's built-in development server can be used for testing and development. For a real production environment, an appropriate server configuration and HTTPS are recommended.
+
+The database connection is established through PDO according to the application's configuration.
+
+---
+
 # Implemented Security Measures
 
 ## SQL Injection
@@ -130,51 +175,6 @@ The project uses a **MySQL** database.
 Database operations are performed through PDO from PHP.
 
 MySQL was chosen because it is widely used with PHP and Apache and is suitable for creating an environment based on a real database server.
-
----
-
-# Installation and Setup
-
-## Requirements
-
-- PHP 8.1+
-- Apache
-- MySQL 5.7+ / MariaDB 10.3+ (InnoDB and `INSERT ... ON DUPLICATE KEY UPDATE` support are required)
-- `pdo_mysql` extension
-- HTTPS is recommended
-
-The required PDO driver that allows PHP to communicate with MySQL must be enabled for the application to work.
-
-## Database Connection Settings
-
-Connection details are read from environment variables in `config.php`. If they are not defined, development-oriented default values are used:
-
-| Variable  | Description          | Default           |
-| --------- | -------------------- | ----------------- |
-| `DB_HOST` | MySQL server address | `127.0.0.1`       |
-| `DB_PORT` | MySQL port           | `3306`            |
-| `DB_NAME` | Database name        | `forum`           |
-| `DB_USER` | Username             | `forum`           |
-| `DB_PASS` | Password             | `str0ng-p4ssw@rd` |
-
-First, create the database and user:
-
-```sql
-CREATE DATABASE forum CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'forum'@'localhost' IDENTIFIED BY 'str0ng-p4ssw@rd';
-GRANT ALL PRIVILEGES ON forum.* TO 'forum'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-Then configure the environment variables (e.g., using Apache `SetEnv` or system environment variables) and run the application. The tables are automatically created by `config.php` on the first request in an idempotent manner, so manually importing a schema is not required.
-
-## Server Environment
-
-It is recommended to run the application on a real web server such as Apache.
-
-PHP's built-in development server can be used for testing and development. For a real production environment, an appropriate server configuration and HTTPS are recommended.
-
-The database connection is established through PDO according to the application's configuration.
 
 ---
 
