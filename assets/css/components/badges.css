@@ -1,0 +1,248 @@
+/* ===== BADGES / AVATARS / TABS / PAGINATION ===== */
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	height: 20px;
+	padding: 0 7px;
+	border-radius: 999px;
+	border: 1px solid var(--border);
+	background: var(--surface2);
+	color: var(--muted);
+	font-size: 11.5px;
+	font-weight: 500;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.badge svg {
+	width: 11px;
+	height: 11px;
+}
+
+.badge-role {
+	border-color: var(--accent-border-soft);
+	background: var(--info-soft);
+	color: var(--accent);
+}
+
+.badge-warn {
+	border-color: var(--warning-border);
+	background: var(--warning-soft);
+	color: var(--warning);
+}
+
+a.badge:hover {
+	border-color: var(--accent-border);
+	color: var(--text);
+}
+
+.cat-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 20px;
+	padding: 0 8px;
+	border-radius: 5px;
+	background: var(--surface2);
+	border: 1px solid var(--border);
+	color: var(--muted);
+	font-size: 11.5px;
+	font-weight: 500;
+	line-height: 1;
+}
+
+.cat-pill:hover {
+	color: var(--text);
+	border-color: var(--accent-border);
+}
+
+/* Avatars */
+.avatar {
+	--tone: var(--accent2);
+	display: inline-grid;
+	place-items: center;
+	flex-shrink: 0;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background: color-mix(in srgb, var(--tone) 16%, var(--surface));
+	border: 1px solid color-mix(in srgb, var(--tone) 28%, var(--surface));
+	color: var(--tone);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1;
+	user-select: none;
+}
+
+.avatar-sm {
+	width: 26px;
+	height: 26px;
+	font-size: 11.5px;
+}
+.avatar-lg {
+	width: 56px;
+	height: 56px;
+	font-size: 22px;
+}
+.avatar-xl {
+	width: 80px;
+	height: 80px;
+	font-size: 32px;
+}
+
+.tone-0 { --tone: #818cf8; }
+.tone-1 { --tone: #2dd4bf; }
+.tone-2 { --tone: #f472b6; }
+.tone-3 { --tone: #fbbf24; }
+.tone-4 { --tone: #a3e635; }
+.tone-5 { --tone: #60a5fa; }
+.tone-6 { --tone: #fb923c; }
+.tone-7 { --tone: #c084fc; }
+
+/* Tabs */
+.tabs {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	border-bottom: 1px solid var(--border);
+	margin-bottom: 0;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+	display: none;
+}
+
+.tab {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 10px 12px;
+	color: var(--muted);
+	font-size: 13.5px;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.tab:hover {
+	color: var(--text);
+}
+
+.tab.active {
+	color: var(--text);
+}
+
+.tab.active::after {
+	content: "";
+	position: absolute;
+	left: 8px;
+	right: 8px;
+	bottom: -1px;
+	height: 2px;
+	border-radius: 2px;
+	background: var(--accent);
+}
+
+.tab svg {
+	width: 14px;
+	height: 14px;
+}
+
+.tab .tab-count {
+	font-size: 11.5px;
+	color: var(--muted);
+	background: var(--surface2);
+	border-radius: 999px;
+	padding: 1px 7px;
+}
+
+.tabs .tab-spacer {
+	flex: 1;
+}
+
+/* Chips (filter row) */
+.chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin: 14px 0;
+}
+
+.chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 28px;
+	padding: 0 11px;
+	border: 1px solid var(--border);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--muted);
+	font-size: 12.5px;
+	font-weight: 500;
+}
+
+.chip:hover {
+	border-color: var(--accent-border);
+	color: var(--text);
+}
+
+.chip.active {
+	background: var(--info-soft);
+	border-color: var(--accent-border-soft);
+	color: var(--text);
+}
+
+.chip svg {
+	width: 13px;
+	height: 13px;
+}
+
+/* Pagination */
+.pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+	margin: 28px 0 0;
+}
+
+.page-link {
+	display: inline-grid;
+	place-items: center;
+	min-width: 34px;
+	height: 34px;
+	padding: 0 8px;
+	border: 1px solid transparent;
+	border-radius: var(--radius);
+	color: var(--muted);
+	font-size: 13px;
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+}
+
+a.page-link:hover {
+	background: var(--surface2);
+	border-color: var(--border);
+	color: var(--text);
+}
+
+.page-link.current {
+	background: var(--surface2);
+	border-color: var(--border);
+	color: var(--text);
+}
+
+.page-link svg {
+	width: 15px;
+	height: 15px;
+}
+
+.page-gap {
+	color: var(--subtle);
+	padding: 0 4px;
+}

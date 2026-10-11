@@ -56,6 +56,12 @@ final class AuthController extends Controller
         $username = '';
         $email = '';
 
+        // Kayıt kapalıysa (ilk kullanıcı hariç) form gösterilmez / işlenmez
+        $closed = !site_setting('registration_open') && User::countAll() > 0;
+        if ($closed) {
+            return ['errors' => [], 'username' => '', 'email' => '', 'closed' => true];
+        }
+
         if ($this->isPost()) {
             $this->verifyCsrf();
 
@@ -65,6 +71,7 @@ final class AuthController extends Controller
             $password2 = (string)($_POST['password2'] ?? '');
 
             if ($err = validate_username($username)) $errors[] = $err;
+            elseif (is_reserved_username($username)) $errors[] = 'This username is reserved. Please choose another one.';
             if ($err = validate_email($email))       $errors[] = $err;
             if ($err = validate_password($password)) $errors[] = $err;
             if ($password !== $password2)            $errors[] = 'The passwords do not match.';
@@ -92,6 +99,7 @@ final class AuthController extends Controller
             'errors'   => $errors,
             'username' => $username,
             'email'    => $email,
+            'closed'   => false,
         ];
     }
 

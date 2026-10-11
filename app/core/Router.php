@@ -15,6 +15,7 @@ final class Router
         'search'        => ['controller' => SearchController::class,       'method' => 'search',   'view' => 'search'],
         'settings'      => ['controller' => SettingsController::class,     'method' => 'index',    'view' => 'settings'],
         'notifications' => ['controller' => NotificationController::class, 'method' => 'index',    'view' => 'notifications'],
+        'admin'         => ['controller' => AdminController::class,        'method' => 'index',    'view' => 'admin'],
     ];
 
     public static function resolveRouteName(): string
@@ -45,6 +46,11 @@ final class Router
             return 'thread';
         }
 
+        if (preg_match('#^category/([a-z0-9-]+)$#', $path, $matches)) {
+            $_GET['c'] = $matches[1];
+            return 'home';
+        }
+
         if (preg_match('#^profile/(.+)$#', $path, $matches)) {
             $_GET['u'] = rawurldecode($matches[1]);
             return 'profile';
@@ -63,6 +69,19 @@ final class Router
             return;
         }
 
+        $viewer = current_user();
+        $viewerIsAdmin = $viewer && ($viewer['role'] ?? '') === 'admin';
+
+        // Bakım modu: yalnızca adminler (ve giriş sayfası) erişebilir
+        if (site_setting('maintenance_mode') && !$viewerIsAdmin && !in_array($routeName, ['login', 'logout'], true)) {
+            render_maintenance();
+        }
+
+        // Yalnızca üyeler: misafirler giriş sayfasına yönlendirilir
+        if (site_setting('require_login_to_read') && !$viewer && !in_array($routeName, ['login', 'register', 'logout'], true)) {
+            redirect(url('login'));
+        }
+
         $controllerClass = $route['controller'];
         $method = $route['method'];
 
@@ -77,10 +96,6 @@ final class Router
 
     private static function renderNotFound(): void
     {
-        http_response_code(404);
-        $pageTitle = 'Forum - Not Found';
-        require __DIR__ . '/../../includes/header.php';
-        echo '<h1>404</h1><p class="empty">The page you are looking for does not exist.</p>';
-        require __DIR__ . '/../../includes/footer.php';
+        render_error(404, 'Page not found', 'The page you are looking for does not exist or has been moved.');
     }
 }

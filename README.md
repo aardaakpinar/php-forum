@@ -64,6 +64,18 @@ The database connection is established through PDO according to the application'
 
 ---
 
+# Redesign & New Features
+
+- New minimal dark UI (zinc palette, self-hosted Inter font, CSP-safe: no inline CSS/JS)
+- Categories (admin-managed), sorting (Latest / New / Top / Most viewed), filters (Following / My threads / Unanswered)
+- Pagination, view counter, likes, quote-reply, Markdown toolbar (lists, quotes, code with highlighting)
+- Header search, richer notifications, profile bio + replies tab
+- Admin panel at `/admin` (stats, categories, members, site name/tagline/logo settings). Logo uploads accept PNG, JPEG, WebP, or GIF up to 2 MB; the server must be able to write to `assets/uploads`. **The first registered user becomes admin.**
+- Docker: `docker compose up --build` then open http://localhost:8080
+- Schema upgrades run automatically (existing installs are migrated; old threads go to "General")
+
+---
+
 # Implemented Security Measures
 
 ## SQL Injection

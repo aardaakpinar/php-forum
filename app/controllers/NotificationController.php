@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * NotificationController
- * Kullanicinin bildirimlerini listeler, tumunu okundu isaretleme islemini yonetir.
+ * Kullanıcının bildirimlerini listeler, tümünü okundu işaretleme işlemini yönetir.
  */
 final class NotificationController extends Controller
 {
@@ -19,7 +19,7 @@ final class NotificationController extends Controller
 
         return [
             'user'  => $user,
-            'notes' => Notification::fetchForUser($user, 200),
+            'notes' => Notification::fetchForUser($user, 100),
         ];
     }
 }

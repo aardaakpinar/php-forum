@@ -1,38 +1,103 @@
-<?php $pageTitle = 'Forum - Threads'; require __DIR__ . '/../../includes/header.php'; ?>
-<div class="page-header">
-    <h1>Threads</h1>
-    <?php if ($user): ?>
-        <a href="<?= e(url('new-thread')) ?>" class="cta">New Thread</a>
-    <?php endif; ?>
-</div>
+<?php
+$pageTitle = page_title($category ? $category['name'] : 'Threads');
+$__nav = 'home';
+require __DIR__ . '/../../includes/header.php';
 
-<?php if (!$threads): ?>
-    <p class="empty">
-        No threads yet.
-        <?php if ($user): ?><a href="<?= e(url('new-thread')) ?>">Bring up the first threads.</a><?php endif; ?>
-    </p>
-<?php else: ?>
-    <ul class="thread-list">
-        <?php foreach ($threads as $t):
-            $isUnread = $user && ((int)($t['last_read_at'] ?? 0) < (int)$t['last_activity_at']);
-        ?>
-            <li class="thread-item<?= (int)$t['pinned'] === 1 ? ' pinned' : '' ?><?= $isUnread ? ' unread' : '' ?>">
-                <a class="thread-title" href="<?= e(url('thread/' . (int)$t['id'])) ?>">
-                    <?php if ($isUnread): ?><span class="unread-dot" title="Unread"></span><?php endif; ?>
-                    <?php if ((int)$t['pinned'] === 1): ?><i data-lucide="pin" class="pin-icon"></i><?php endif; ?>
-                    <?php if ((int)$t['locked'] === 1): ?><i data-lucide="lock" class="lock-icon"></i><?php endif; ?>
-                    <?= e($t['title']) ?>
-                </a>
-                <div class="thread-meta">
-                    <span><?= e($t['username']) ?></span>
-                    <span class="dot">·</span>
-                    <span><?= e(date('d.m.Y H:i', (int)$t['created_at'])) ?></span>
-                    <span class="dot">·</span>
-                    <span><?= (int)$t['reply_count'] ?> Replies</span>
-                </div>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+$baseUrl = $category ? url('category/' . $category['slug']) : url();
+$qs = static function (array $over = []) use ($sort, $filter, $defaultSort): array {
+    $p = array_merge(['sort' => $sort, 'filter' => $filter ?: null], $over);
+    if (($p['sort'] ?? null) === $defaultSort) {
+        $p['sort'] = null; // varsayılan sıralama URL'de gösterilmez
+    }
+    return array_filter($p, static fn($v) => $v !== null && $v !== '');
+};
+$link = static fn(array $over = []) => $baseUrl . ($qs($over) ? '?' . http_build_query($qs($over)) : '');
+?>
+
+<?php if (!$user && !$category && $page === 1 && site_setting('show_welcome_intro')): ?>
+<section class="intro">
+    <div>
+        <h1>Welcome to <?= e(site_settings()['name']) ?></h1>
+        <p><?= e(site_settings()['tagline']) ?></p>
+    </div>
+    <div class="intro-actions">
+        <?php if ($__canRegister): ?><a href="<?= e(url('register')) ?>" class="btn btn-primary">Create account</a><?php endif; ?>
+        <a href="<?= e(url('login')) ?>" class="btn btn-secondary">Log in</a>
+    </div>
+</section>
 <?php endif; ?>
+
+<div class="layout">
+    <aside class="sidebar" aria-label="Sidebar">
+        <?php if (site_setting('show_categories_widget')): ?>
+        <div class="widget">
+            <h2 class="widget-title">Categories</h2>
+            <ul class="cat-list">
+                <li><a href="<?= e(url()) ?>" class="<?= !$category ? 'active' : '' ?>"><span>All threads</span><span class="count"><?= (int)$stats['threads'] ?></span></a></li>
+                <?php foreach ($categories as $c): ?>
+                    <li><a href="<?= e(url('category/' . $c['slug'])) ?>" class="<?= $category && (int)$category['id'] === (int)$c['id'] ? 'active' : '' ?>"><span><?= e($c['name']) ?></span><span class="count"><?= (int)$c['thread_count'] ?></span></a></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <?php endif; ?>
+
+        <?php if (site_setting('show_stats_widget')): ?>
+        <div class="widget">
+            <h2 class="widget-title">Forum stats</h2>
+            <dl class="stat-list">
+                <div><dt>Threads</dt><dd><?= compact_number((int)$stats['threads']) ?></dd></div>
+                <div><dt>Replies</dt><dd><?= compact_number((int)$stats['posts']) ?></dd></div>
+                <div><dt>Members</dt><dd><?= compact_number((int)$stats['members']) ?></dd></div>
+            </dl>
+            <?php if (!empty($stats['newest'])): ?>
+                <p class="widget-note">Newest member: <a href="<?= e(url('profile/' . rawurlencode($stats['newest']['username']))) ?>"><?= e($stats['newest']['username']) ?></a></p>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+    </aside>
+    <div>
+        <div class="page-header">
+            <div>
+                <h1><?= e($category ? $category['name'] : 'Threads') ?></h1>
+                <?php if ($category && $category['description'] !== ''): ?>
+                    <p class="lead"><?= e($category['description']) ?></p>
+                <?php endif; ?>
+            </div>
+            <?php if ($user): ?>
+            <div class="page-actions">
+                <a href="<?= e(url('new-thread') . ($category ? '?c=' . rawurlencode($category['slug']) : '')) ?>" class="btn btn-primary"><i data-lucide="plus"></i>New thread</a>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <div class="tabs" role="tablist">
+            <a class="tab<?= $sort === 'latest' ? ' active' : '' ?>" href="<?= e($link(['sort' => 'latest', 'page' => null])) ?>"><i data-lucide="clock"></i>Latest</a>
+            <a class="tab<?= $sort === 'new' ? ' active' : '' ?>" href="<?= e($link(['sort' => 'new', 'page' => null])) ?>"><i data-lucide="plus"></i>New</a>
+            <a class="tab<?= $sort === 'top' ? ' active' : '' ?>" href="<?= e($link(['sort' => 'top', 'page' => null])) ?>"><i data-lucide="flame"></i>Top</a>
+            <a class="tab<?= $sort === 'views' ? ' active' : '' ?>" href="<?= e($link(['sort' => 'views', 'page' => null])) ?>"><i data-lucide="eye"></i>Most viewed</a>
+        </div>
+
+        <div class="chips">
+            <a class="chip<?= $filter === '' ? ' active' : '' ?>" href="<?= e($link(['filter' => null, 'page' => null])) ?>">All</a>
+            <?php if ($user): ?>
+                <a class="chip<?= $filter === 'following' ? ' active' : '' ?>" href="<?= e($link(['filter' => 'following', 'page' => null])) ?>"><i data-lucide="bell"></i>Following</a>
+                <a class="chip<?= $filter === 'mine' ? ' active' : '' ?>" href="<?= e($link(['filter' => 'mine', 'page' => null])) ?>"><i data-lucide="user"></i>My threads</a>
+            <?php endif; ?>
+            <a class="chip<?= $filter === 'unanswered' ? ' active' : '' ?>" href="<?= e($link(['filter' => 'unanswered', 'page' => null])) ?>"><i data-lucide="circle-help"></i>Unanswered</a>
+        </div>
+
+        <?php if (!$threads): ?>
+            <div class="card empty-state">
+                <i data-lucide="inbox"></i>
+                <h3>No threads here yet</h3>
+                <p><?= $filter ? 'Nothing matches this filter.' : 'Be the first to start a conversation.' ?></p>
+                <?php if ($user): ?><a class="btn btn-primary" href="<?= e(url('new-thread') . ($category ? '?c=' . rawurlencode($category['slug']) : '')) ?>">Start a thread</a><?php endif; ?>
+            </div>
+        <?php else: ?>
+            <?php require __DIR__ . '/partials/thread_rows.php'; ?>
+            <?= pagination($page, $pages, $baseUrl, $qs()) ?>
+        <?php endif; ?>
+    </div>
+</div>
 
 <?php require __DIR__ . '/../../includes/footer.php'; ?>

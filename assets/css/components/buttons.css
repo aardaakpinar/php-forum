@@ -1,76 +1,160 @@
-/* ===== BUTTON ===== */
+/* ===== BUTTONS ===== */
 
-.cta {
-	display: inline-block;
-	padding: 13px 22px;
-	border: 1px solid var(--border-strong);
-	background: var(--panel-soft);
-	color: var(--fg);
-	text-decoration: none;
-	font-family: var(--font-mono);
-	font-size: 13px;
-	letter-spacing: 0.06em;
-	cursor: pointer;
-	transition:
-		background 0.2s ease,
-		border-color 0.2s ease,
-		color 0.2s ease,
-		box-shadow 0.2s ease;
-}
-
-.cta:hover {
-	background: var(--panel);
-	border-color: var(--line);
-	box-shadow: 0 0 0 4px rgba(145, 242, 183, 0.06);
-}
-
+.btn,
+.cta,
 .danger {
-	display: inline-block;
-	padding: 13px 22px;
-	border: 1px solid var(--danger-border);
-	background: var(--danger-bg);
-	color: var(--danger);
-	text-decoration: none;
-	font-family: var(--font-mono);
-	font-size: 13px;
-	letter-spacing: 0.06em;
-	cursor: pointer;
-	transition:
-		background 0.2s ease,
-		border-color 0.2s ease,
-		color 0.2s ease,
-		box-shadow 0.2s ease;
-}
-
-.follow-btn {
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	gap: 7px;
-	padding: 9px 16px;
-	border: 1px solid var(--border-strong);
-	background: var(--panel-soft);
-	color: var(--fg-dim);
-	font-family: var(--font-mono);
-	font-size: 12.5px;
-	letter-spacing: 0.05em;
+	height: 38px;
+	padding: 0 16px;
+	border: 1px solid transparent;
+	border-radius: var(--radius);
+	font-family: var(--font);
+	font-size: 13.5px;
+	font-weight: 500;
+	line-height: 1;
+	white-space: nowrap;
 	cursor: pointer;
-	transition:
-		background 0.2s ease,
-		border-color 0.2s ease,
-		color 0.2s ease;
+	text-decoration: none;
+	transition: background 0.15s var(--ease), border-color 0.15s var(--ease), color 0.15s var(--ease), transform 0.1s var(--ease);
 }
 
-.follow-btn:hover {
-	border-color: var(--line);
-	color: var(--fg);
+.btn:active {
+	transform: translateY(1px);
 }
 
-.follow-btn svg {
-	width: 13px;
-	height: 13px;
+.btn svg {
+	width: 15px;
+	height: 15px;
+}
+
+.btn-primary,
+.cta {
+	background: var(--accent);
+	border-color: var(--accent);
+	color: var(--accent-contrast);
+}
+
+.btn-primary:hover,
+.cta:hover {
+	background: var(--accent-hover);
+	border-color: var(--accent-hover);
+	color: var(--accent-contrast);
+}
+
+.btn-secondary {
+	background: var(--surface2);
+	border-color: var(--border);
+	color: var(--text);
+}
+
+.btn-secondary:hover {
+	border-color: var(--accent-border);
+	background: var(--surface2);
+	color: var(--text);
+}
+
+.btn-ghost {
+	background: transparent;
+	color: var(--muted);
+}
+
+.btn-ghost:hover {
+	background: var(--surface2);
+	color: var(--text);
+}
+
+.btn-danger,
+.danger {
+	background: var(--danger-soft);
+	border-color: var(--danger-border);
+	color: var(--danger);
+}
+
+.btn-danger:hover,
+.danger:hover {
+	background: rgba(239, 68, 68, 0.16);
+	border-color: rgba(239, 68, 68, 0.5);
+	color: var(--danger);
+}
+
+.btn-sm {
+	height: 32px;
+	padding: 0 12px;
+	font-size: 13px;
+}
+
+.btn-block {
+	width: 100%;
+}
+
+.btn[disabled],
+.btn.disabled {
+	opacity: 0.45;
+	pointer-events: none;
+}
+
+/* Follow / like toggles */
+.follow-btn,
+.like-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 32px;
+	padding: 0 12px;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	background: var(--surface2);
+	color: var(--muted);
+	font: inherit;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.15s var(--ease), border-color 0.15s var(--ease), color 0.15s var(--ease);
+}
+
+.follow-btn:hover,
+.like-btn:hover {
+	border-color: var(--accent-border);
+	color: var(--text);
+}
+
+.follow-btn svg,
+.like-btn svg {
+	width: 14px;
+	height: 14px;
 }
 
 .follow-btn.following {
-	border-color: var(--line);
-	color: var(--line);
+	background: var(--info-soft);
+	border-color: var(--accent-border-soft);
+	color: var(--text);
+}
+
+.like-btn {
+	height: 30px;
+	padding: 0 10px;
+	background: transparent;
+	border-color: transparent;
+}
+
+.like-btn.liked {
+	color: var(--text);
+	background: var(--info-soft);
+}
+
+.like-btn.liked svg {
+	fill: currentColor;
+}
+
+.like-btn[disabled] {
+	cursor: default;
+	opacity: 0.8;
+}
+
+.like-btn[disabled]:hover {
+	border-color: transparent;
+	color: var(--muted);
 }

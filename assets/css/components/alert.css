@@ -1,40 +1,59 @@
 /* ===== ALERT ===== */
 
 .alert {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
 	border: 1px solid var(--danger-border);
-	background: var(--danger-bg);
-	color: var(--danger);
-	padding: 14px 16px;
-	margin-bottom: 24px;
+	background: var(--danger-soft);
+	color: #fca5a5;
+	padding: 12px 14px;
+	margin-bottom: 20px;
+	border-radius: var(--radius);
 	font-size: 13.5px;
-	line-height: 1.7;
+	line-height: 1.6;
 }
 
 .alert p {
 	margin: 0;
 }
 
-.alert p + p {
-	margin-top: 4px;
-}
-
 .alert-success {
 	border-color: var(--success-border);
-	background: var(--success-bg);
-	color: var(--success);
+	background: var(--success-soft);
+	color: #86efac;
+}
+
+.alert-info {
+	border-color: var(--accent-border-soft);
+	background: var(--info-soft);
+	color: var(--text);
+}
+
+.alert-warning {
+	border-color: var(--warning-border);
+	background: var(--warning-soft);
+	color: var(--warning);
 }
 
 .empty,
 .hint {
-	color: var(--fg-dim);
+	color: var(--muted);
 	font-size: 13.5px;
 	line-height: 1.7;
 }
 
 .hint {
-	margin-top: 20px;
+	margin-top: 16px;
 }
 
 .hint a {
-	color: var(--line);
+	color: var(--text);
+	text-decoration: underline;
+	text-decoration-color: var(--subtle);
+	text-underline-offset: 3px;
+}
+
+.alert-spaced {
+	margin-top: 20px;
 }

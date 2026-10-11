@@ -3,8 +3,21 @@ declare(strict_types=1);
 
 final class Notification
 {
+    /** Bildirim türü => kullanıcı tercih anahtarı. */
+    private const PREF_KEYS = [
+        'reply'   => 'notify_replies',
+        'mention' => 'notify_mentions',
+        'like'    => 'notify_likes',
+    ];
+
     public static function create(int $userId, string $type, int $actorUserId, ?int $threadId = null, ?int $postId = null): void
     {
+        // Alıcı bu türde bildirim istemiyorsa oluşturma
+        $prefKey = self::PREF_KEYS[$type] ?? null;
+        if ($prefKey !== null && !(user_prefs_for($userId)[$prefKey] ?? true)) {
+            return;
+        }
+
         $stmt = Database::get()->prepare(
             'INSERT INTO notifications (user_id, type, actor_user_id, thread_id, post_id, is_read, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)'
         );
@@ -16,10 +29,15 @@ final class Notification
         if (!$user) {
             return 0;
         }
+        static $cache = [];
+        $uid = (int)$user['id'];
+        if (isset($cache[$uid])) {
+            return $cache[$uid];
+        }
         try {
             $stmt = Database::get()->prepare('SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0');
-            $stmt->execute([$user['id']]);
-            return (int)$stmt->fetchColumn();
+            $stmt->execute([$uid]);
+            return $cache[$uid] = (int)$stmt->fetchColumn();
         } catch (PDOException $e) {
             return 0;
         }
@@ -29,9 +47,10 @@ final class Notification
     {
         try {
             $stmt = Database::get()->prepare(
-                'SELECT n.*, u.username AS actor_username FROM notifications n
+                'SELECT n.*, u.username AS actor_username, t.title AS thread_title FROM notifications n
                  JOIN users u ON u.id = n.actor_user_id
-                 WHERE n.user_id = ? ORDER BY n.created_at DESC LIMIT ?'
+                 LEFT JOIN threads t ON t.id = n.thread_id
+                 WHERE n.user_id = ? ORDER BY n.created_at DESC, n.id DESC LIMIT ?'
             );
             $stmt->bindValue(1, $user['id'], PDO::PARAM_INT);
             $stmt->bindValue(2, $limit, PDO::PARAM_INT);

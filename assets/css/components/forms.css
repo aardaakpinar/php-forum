@@ -4,58 +4,215 @@
 	margin-bottom: 18px;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 6px;
 }
 
 .form-group.line {
 	flex-direction: row;
+	gap: 8px;
+	margin-bottom: 0;
 }
 
-.form-group label {
-	color: var(--fg);
+.form-group label,
+.field-label {
+	color: var(--text);
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.form-group small,
+.field-help {
+	color: var(--muted);
 	font-size: 12.5px;
-	letter-spacing: 0.05em;
-	text-transform: uppercase;
-}
-
-.form-group small {
-	color: var(--fg-muted);
-	font-size: 12px;
+	line-height: 1.5;
 }
 
 input[type="text"],
 input[type="email"],
 input[type="search"],
 input[type="password"],
+input[type="number"],
+select,
 textarea {
 	width: 100%;
-	background: var(--panel);
-	border: 1px solid var(--border-strong);
-	color: var(--fg);
-	font-family: var(--font-mono);
+	background: var(--surface-deep);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	color: var(--text);
+	font-family: var(--font);
 	font-size: 14px;
-	padding: 12px 14px;
+	padding: 0 12px;
+	height: 40px;
 	outline: none;
-	transition:
-		border-color 0.2s ease,
-		box-shadow 0.2s ease;
+	transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease), background 0.15s var(--ease);
+}
+
+input::placeholder,
+textarea::placeholder {
+	color: #71717a;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+	-webkit-appearance: none;
 }
 
 textarea {
+	height: auto;
+	padding: 12px;
 	resize: vertical;
-	line-height: 1.7;
+	line-height: 1.65;
+	min-height: 120px;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+	border-color: var(--subtle);
 }
 
 input:focus,
+select:focus,
 textarea:focus {
-	border-color: var(--line);
-	box-shadow: 0 0 0 3px rgba(145, 242, 183, 0.08);
+	border-color: var(--accent-border-strong);
+	box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-.md-input {
-	border-left: 2px solid var(--line-dim);
+.select-wrap {
+	position: relative;
 }
 
-.notifications-actions {
-	margin-bottom: 12px;
+.select-wrap select {
+	appearance: none;
+	-webkit-appearance: none;
+	padding-right: 34px;
+	cursor: pointer;
+}
+
+.select-wrap svg {
+	position: absolute;
+	right: 11px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 15px;
+	height: 15px;
+	color: var(--muted);
+	pointer-events: none;
+}
+
+select option {
+	background: var(--surface);
+	color: var(--text);
+}
+
+.inline-form {
+	display: inline;
+	margin: 0;
+}
+
+/* Markdown editor */
+.editor {
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	background: var(--surface-deep);
+	transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+
+.editor:focus-within {
+	border-color: var(--accent-border-strong);
+	box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.editor textarea {
+	border: 0;
+	border-radius: 0 0 var(--radius) var(--radius);
+	background: transparent;
+	box-shadow: none !important;
+	min-height: 140px;
+}
+
+.editor-toolbar {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 2px;
+	padding: 6px;
+	border-bottom: 1px solid var(--border);
+	background: var(--surface);
+	border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.editor-toolbar button {
+	display: inline-grid;
+	place-items: center;
+	width: 30px;
+	height: 30px;
+	background: transparent;
+	border: 0;
+	border-radius: var(--radius-sm);
+	color: var(--muted);
+	cursor: pointer;
+}
+
+.editor-toolbar button:hover {
+	background: var(--surface2);
+	color: var(--text);
+}
+
+.editor-toolbar svg {
+	width: 15px;
+	height: 15px;
+}
+
+.editor-toolbar .tb-sep {
+	width: 1px;
+	height: 16px;
+	margin: 0 4px;
+	background: var(--border);
+}
+
+.editor-toolbar .char-count {
+	margin-left: auto;
+	padding: 0 8px;
+	font-size: 12px;
+	color: var(--muted);
+	font-variant-numeric: tabular-nums;
+}
+
+.char-count.warn {
+	color: var(--warning);
+}
+
+.form-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.form-actions .field-help {
+	margin-left: auto;
+}
+
+/* Settings blocks */
+.settings-section {
+	padding: 24px;
+	margin-bottom: 16px;
+}
+
+.settings-section h2 {
+	margin-bottom: 4px;
+}
+
+.settings-section > .lead {
+	color: var(--muted);
+	margin: 0 0 20px;
+	font-size: 13.5px;
+}
+
+.settings-section.danger-zone {
+	border-color: var(--danger-border);
+}
+
+.settings-section.danger-zone h2 {
+	color: var(--danger);
 }

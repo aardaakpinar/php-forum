@@ -1,80 +1,243 @@
-/* ===== BASE (orijinal tema tokenlari korunmustur) ===== */
+/* ==========================================================================
+   BASE — design tokens, reset, typography
+   ========================================================================== */
 
-:root {
-	--bg: #050607;
-	--panel: #0b0d0e;
-	--panel-soft: #090a0b;
-	--fg: #ffffff;
-	--fg-dim: #b7bbb8;
-	--fg-muted: #767c78;
-	--fg-faint: #4a504c;
-	--line: #91f2b7;
-	--line-dim: #b7bbb8;
-	--border: #1c2420;
-	--border-strong: #34443b;
-	--danger: #ff6b6b;
-	--danger-bg: rgba(255, 107, 107, 0.08);
-	--danger-border: rgba(255, 107, 107, 0.35);
-	--success: #91f2b7;
-	--success-bg: rgba(145, 242, 183, 0.08);
-	--success-border: rgba(145, 242, 183, 0.35);
-	--shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
-    --header-height: 52px;
-	--max: 960px;
-	--font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("../fonts/inter-Regular.woff") format("woff");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url("../fonts/inter-Medium.woff") format("woff");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url("../fonts/inter-SemiBold.woff") format("woff");
+}
+@font-face {
+	font-family: "Inter";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("../fonts/inter-Bold.woff") format("woff");
 }
 
-* {
+:root {
+	--font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	--mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	--bg: #09090b;
+	--surface: #111113;
+	--surface2: #19191c;
+	--surface-deep: #080810;
+	--border: #2a2a2e;
+	--accent: #e4e4e7;
+	--accent2: #a1a1aa;
+	--accent-glow: rgba(228, 228, 231, 0.09);
+	--accent-border-soft: rgba(228, 228, 231, 0.2);
+	--accent-border: rgba(228, 228, 231, 0.3);
+	--accent-border-strong: rgba(228, 228, 231, 0.4);
+	--accent-contrast: #09090b;
+	--accent-hover: #ffffff;
+	--text: #f4f4f5;
+	--muted: #a1a1aa;
+	--subtle: #3f3f46;
+	--warning: #d4a017;
+	--warning-soft: rgba(245, 158, 11, 0.06);
+	--warning-border: rgba(245, 158, 11, 0.2);
+	--success: #22c55e;
+	--success-soft: rgba(34, 197, 94, 0.1);
+	--success-border: rgba(34, 197, 94, 0.2);
+	--danger: #ef4444;
+	--info-soft: rgba(228, 228, 231, 0.1);
+	--code-comment: #3d3d5c;
+	--code-keyword: #c792ea;
+	--code-string: #f59e0b;
+	--code-variable: #22c55e;
+}
+
+/* Türetilmiş değerler (palet dışı, yalnızca yapı için) */
+:root {
+	--danger-soft: rgba(239, 68, 68, 0.08);
+	--danger-border: rgba(239, 68, 68, 0.28);
+	--radius-sm: 6px;
+	--radius: 8px;
+	--radius-lg: 12px;
+	--header-height: 60px;
+	--max: 1120px;
+	--max-narrow: 560px;
+	--ease: cubic-bezier(0.2, 0, 0, 1);
+	--shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.03);
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
 	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	scroll-padding-top: calc(var(--header-height) + 16px);
+	scroll-behavior: smooth;
 }
 
 html,
 body {
-	height: 100%;
 	margin: 0;
 }
 
 body {
 	min-height: 100dvh;
-	background: var(--bg);
-	color: var(--fg);
-	font-family: var(--font-mono);
 	display: flex;
 	flex-direction: column;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font);
+	font-size: 14.5px;
+	line-height: 1.6;
+	font-feature-settings: "cv11", "ss01";
 	-webkit-font-smoothing: antialiased;
-	text-rendering: geometricPrecision;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
 }
 
-body::before {
-	content: "";
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	background: linear-gradient(rgba(145, 242, 183, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(145, 242, 183, 0.018) 1px, transparent 1px), radial-gradient(circle at 50% 0%, rgba(145, 242, 183, 0.09), transparent 34%);
-	background-size:
-		100% 32px,
-		32px 100%,
-		100% 100%;
-	mask-image: linear-gradient(to bottom, #000, rgba(0, 0, 0, 0.6) 45%, transparent);
-	z-index: 0;
+::selection {
+	background: rgba(228, 228, 231, 0.22);
 }
 
 a {
-	color: var(--fg);
+	color: var(--text);
+	text-decoration: none;
+	transition: color 0.15s var(--ease);
+}
+
+a:hover {
+	color: var(--accent);
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent-border-strong);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	margin: 0;
+	color: var(--text);
+	font-weight: 600;
+	letter-spacing: -0.015em;
+	line-height: 1.3;
 }
 
 h1 {
-	font-size: clamp(1.5rem, 3.5vw, 2.1rem);
-	letter-spacing: 0.02em;
-	color: var(--fg);
+	font-size: clamp(1.4rem, 2.6vw, 1.7rem);
+	letter-spacing: -0.022em;
 }
 
 h2 {
-	letter-spacing: 0.03em;
-	color: var(--fg);
+	font-size: 1.05rem;
 }
 
 h3 {
-	letter-spacing: 0.02em;
-	color: var(--fg);
+	font-size: 0.95rem;
+}
+
+p {
+	margin: 0 0 1em;
+}
+
+img {
+	max-width: 100%;
+	display: block;
+}
+
+hr {
+	border: 0;
+	border-top: 1px solid var(--border);
+	margin: 1.5em 0;
+}
+
+mark {
+	background: rgba(212, 160, 23, 0.25);
+	color: var(--text);
+	border-radius: 3px;
+	padding: 0 2px;
+}
+
+time {
+	white-space: nowrap;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--subtle);
+	border-radius: 10px;
+	border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* Utilities */
+.muted {
+	color: var(--muted);
+}
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+.skip-link {
+	position: absolute;
+	left: 12px;
+	top: -48px;
+	z-index: 2000;
+	padding: 8px 14px;
+	background: var(--accent);
+	color: var(--accent-contrast);
+	border-radius: var(--radius);
+	font-weight: 600;
+	transition: top 0.15s;
+}
+.skip-link:focus {
+	top: 12px;
+	color: var(--accent-contrast);
+}
+.dot {
+	color: var(--subtle);
+	margin: 0 5px;
+}
+
+[data-lucide],
+svg.lucide {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		animation-duration: 0.01ms !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
 }

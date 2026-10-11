@@ -40,20 +40,17 @@ abstract class Controller
 
     protected function notFound(string $message = 'Not found.'): never
     {
-        http_response_code(404);
-        die($message);
+        render_error(404, 'Not found', $message);
     }
 
     protected function forbidden(string $message = 'Forbidden.'): never
     {
-        http_response_code(403);
-        die($message);
+        render_error(403, 'Forbidden', $message);
     }
 
     protected function badRequest(string $message = 'Invalid request.'): never
     {
-        http_response_code(400);
-        die($message);
+        render_error(400, 'Bad request', $message);
     }
 
     /** Kullanicinin belirtilen kaydin sahibi ya da admin olup olmadigini kontrol eder. */
