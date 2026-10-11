@@ -63,12 +63,6 @@ $link = static fn(array $over = []) => $baseUrl . ($qs($over) ? '?' . http_build
                     <p class="lead"><?= e($category['description']) ?></p>
                 <?php endif; ?>
             </div>
-            <?php if ($user): ?>
-            <div class="page-actions">
-                <a href="<?= e(url('new-thread') . ($category ? '?c=' . rawurlencode($category['slug']) : '')) ?>" class="btn btn-primary"><i data-lucide="plus"></i>New thread</a>
-            </div>
-            <?php endif; ?>
-        </div>
 
         <div class="tabs" role="tablist">
             <a class="tab<?= $sort === 'latest' ? ' active' : '' ?>" href="<?= e($link(['sort' => 'latest', 'page' => null])) ?>"><i data-lucide="clock"></i>Latest</a>

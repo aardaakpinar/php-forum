@@ -85,8 +85,8 @@ final class Thread
         $page  = min($page, $pages);
         $offset = ($page - 1) * $perPage;
 
-        // Sabitlenmiş konular yalnızca "latest/new" ve arama dışı listelerde en üstte
-        $pinFirst = (empty($opts['query']) && in_array($opts['sort'] ?? 'latest', ['latest', 'new'], true)) ? 't.pinned DESC, ' : '';
+        // Sabitlenmiş konular her zaman en üstte
+        $pinFirst = 't.pinned DESC, ';
 
         $sql = "
             SELECT t.id, t.title, t.body, t.created_at, t.pinned, t.locked, t.views, t.category_id,

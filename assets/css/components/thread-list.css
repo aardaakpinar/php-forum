@@ -351,6 +351,10 @@
 }
 
 @media (max-width: 720px) {
+	.cat-list {
+		display: flex;
+		gap: 8px;
+	}
 	.thread-head {
 		display: none;
 	}

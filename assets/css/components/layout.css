@@ -190,10 +190,6 @@ main {
 	.layout {
 		grid-template-columns: minmax(0, 1fr);
 	}
-	.sidebar {
-		position: static;
-		order: 2;
-	}
 }
 
 @media (max-width: 640px) {
