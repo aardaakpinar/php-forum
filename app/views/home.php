@@ -57,18 +57,30 @@ $link = static fn(array $over = []) => $baseUrl . ($qs($over) ? '?' . http_build
     </aside>
     <div>
         <div class="page-header">
-            <div>
+            <div class="page-header-title">
                 <h1><?= e($category ? $category['name'] : 'Threads') ?></h1>
                 <?php if ($category && $category['description'] !== ''): ?>
                     <p class="lead"><?= e($category['description']) ?></p>
                 <?php endif; ?>
             </div>
+            
+            <div class="page-header-actions">
+                <div class="select-wrap sort-select">
+                    <select aria-label="Sort threads" data-nav-select>
+                        <option value="<?= e($link(['sort' => 'latest', 'page' => null])) ?>"<?= $sort === 'latest' ? ' selected' : '' ?>>Latest</option>
+                        <option value="<?= e($link(['sort' => 'new', 'page' => null])) ?>"<?= $sort === 'new' ? ' selected' : '' ?>>New</option>
+                        <option value="<?= e($link(['sort' => 'top', 'page' => null])) ?>"<?= $sort === 'top' ? ' selected' : '' ?>>Top</option>
+                        <option value="<?= e($link(['sort' => 'views', 'page' => null])) ?>"<?= $sort === 'views' ? ' selected' : '' ?>>Most viewed</option>
+                    </select>
+                    <i data-lucide="chevron-down"></i>
+                </div>
+                <?php if ($user): ?>
+                <div class="page-actions">
+                    <a href="<?= e(url('new-thread') . ($category ? '?c=' . rawurlencode($category['slug']) : '')) ?>" class="btn btn-primary"><i data-lucide="plus"></i>New thread</a>
+                </div>
+                <?php endif; ?>
+            </div>
 
-        <div class="tabs" role="tablist">
-            <a class="tab<?= $sort === 'latest' ? ' active' : '' ?>" href="<?= e($link(['sort' => 'latest', 'page' => null])) ?>"><i data-lucide="clock"></i>Latest</a>
-            <a class="tab<?= $sort === 'new' ? ' active' : '' ?>" href="<?= e($link(['sort' => 'new', 'page' => null])) ?>"><i data-lucide="plus"></i>New</a>
-            <a class="tab<?= $sort === 'top' ? ' active' : '' ?>" href="<?= e($link(['sort' => 'top', 'page' => null])) ?>"><i data-lucide="flame"></i>Top</a>
-            <a class="tab<?= $sort === 'views' ? ' active' : '' ?>" href="<?= e($link(['sort' => 'views', 'page' => null])) ?>"><i data-lucide="eye"></i>Most viewed</a>
         </div>
 
         <div class="chips">

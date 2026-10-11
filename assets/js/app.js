@@ -307,6 +307,13 @@
 			}
 		});
 
+		/* ---------- Navigate on select change (CSP-safe) ---------- */
+		document.querySelectorAll("select[data-nav-select]").forEach(function (select) {
+			select.addEventListener("change", function () {
+				if (select.value) window.location.href = select.value;
+			});
+		});
+
 		/* ---------- Icons (en sonda: DOM değişiklikleri tamamlandı) ---------- */
 		if (window.lucide) window.lucide.createIcons();
 	});
