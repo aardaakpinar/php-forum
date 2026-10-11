@@ -31,13 +31,12 @@ main {
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
-	position: sticky;
 	top: calc(var(--header-height) + 24px);
 }
 
 .page-header {
 	display: flex;
-	align-items: flex-start;
+	flex-direction: column;
 	justify-content: space-between;
 	gap: 16px;
 	margin-bottom: 24px;
