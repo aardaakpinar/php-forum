@@ -4,7 +4,6 @@
 .dockerignore
 Dockerfile
 docker-compose*.yml
-docker-entrypoint.sh
 assets/uploads/*
 !assets/uploads/.gitkeep
 *.zip

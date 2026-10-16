@@ -19,9 +19,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /var/www/html
 COPY . /var/www/html/
 
-# Entrypoint scriptini kur ve izinleri ayarla
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+# Entrypoint scriptini doğrudan container içinde oluştur (CRLF ve dosya kopyalama hatalarını önler)
+RUN { \
+        echo '#!/bin/sh'; \
+        echo 'set -e'; \
+        echo 'mkdir -p /var/www/html/assets/uploads'; \
+        echo 'chown -R www-data:www-data /var/www/html/assets/uploads'; \
+        echo 'chmod 775 /var/www/html/assets/uploads'; \
+        echo 'exec "$@"'; \
+    } > /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh \
     && mkdir -p /var/www/html/assets/uploads \
     && chown -R www-data:www-data /var/www/html
 
