@@ -4,9 +4,9 @@
 
 **A lightweight, modern, and security-hardened discussion platform built with native PHP 8.1+ and MySQL / MariaDB.**
 
+[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-aardaakpinar%2Fphp--forum-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/r/aardaakpinar/php-forum)
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D%208.1-777BB4?style=for-the-badge&logo=php&logoColor=white)](#requirements)
 [![Database](https://img.shields.io/badge/MySQL%20%2F%20MariaDB-00618A?style=for-the-badge&logo=mysql&logoColor=white)](#database--environment-variables)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](#option-1-docker-compose-recommended)
 [![Architecture](https://img.shields.io/badge/Architecture-Custom%20MVC-f59e0b?style=for-the-badge)](#system-architecture)
 [![License](https://img.shields.io/badge/License-MIT-emerald?style=for-the-badge)](#license)
 
@@ -107,28 +107,72 @@ Security is treated as a first-class requirement across every layer of the appli
 
 ### Option 1: Docker Compose (Recommended)
 
-The fastest and most reliable way to spin up the entire stack:
+#### A. Run with Pre-built Docker Hub Image (Zero-Clone Setup)
+You don't need to clone the repository. Simply create a `docker-compose.yml` file:
 
+```yaml
+services:
+  web:
+    image: aardaakpinar/php-forum:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - uploads_data:/var/www/html/assets/uploads
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: forum
+      DB_USER: forum
+      DB_PASS: str0ng-p4ssw@rd
+      FORUM_NAME: "My Community Forum"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: forum
+      MARIADB_USER: forum
+      MARIADB_PASSWORD: str0ng-p4ssw@rd
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  uploads_data:
+```
+
+Then start the stack:
+```bash
+docker compose up -d
+```
+
+#### B. Build & Run from Source (Developers)
 1. **Clone the repository:**
-
-    ```bash
-    git clone https://github.com/aardaakpinar/php-forum.git
-    cd php-forum
-    ```
-
+   ```bash
+   git clone https://github.com/aardaakpinar/php-forum.git
+   cd php-forum
+   ```
 2. **Start the containers:**
-
-    ```bash
-    docker compose up --build -d
-    ```
+   ```bash
+   docker compose up --build -d
+   ```
 
 3. **Access the application:**
-    - Open [http://localhost:8080](http://localhost:8080) in your browser.
-    - The MariaDB database container automatically initializes with health checks.
-    - Database tables are automatically migrated on your first visit.
+   - Open [http://localhost:8080](http://localhost:8080) in your browser.
+   - The MariaDB database container automatically initializes with health checks.
+   - Database tables are automatically migrated on your first visit.
 
 To stop the containers:
-
 ```bash
 docker compose down
 ```

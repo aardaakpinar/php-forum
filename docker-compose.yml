@@ -1,5 +1,6 @@
 services:
   web:
+    image: aardaakpinar/php-forum:latest
     build: .
     ports:
       - "8080:80"
