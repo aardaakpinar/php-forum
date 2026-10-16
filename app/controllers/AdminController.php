@@ -72,6 +72,7 @@ final class AdminController extends Controller
 
         if ($tab === 'overview') {
             $data['stats'] = $this->stats();
+            $data['system'] = $this->systemInfo();
             $data['siteSettings'] = site_settings();
             $data['recentThreads'] = Thread::paginate(['sort' => 'new', 'per_page' => 6])['rows'];
         } elseif ($tab === 'categories') {
@@ -87,6 +88,32 @@ final class AdminController extends Controller
         }
 
         return $data;
+    }
+
+    /**
+     * Sürüm ve çalışma ortamı bilgisi (yalnızca admin panelinde gösterilir).
+     *
+     * @return array<string,string>
+     */
+    private function systemInfo(): array
+    {
+        $dbVersion = '—';
+        try {
+            $dbVersion = (string)Database::get()->query('SELECT VERSION()')->fetchColumn();
+        } catch (PDOException $e) {
+            error_log('Admin system info: ' . $e->getMessage());
+        }
+
+        $uploadDir = BASE_DIR . '/assets/uploads';
+
+        return [
+            'Forum version'    => 'v' . ltrim(APP_VERSION, 'v'),
+            'Database schema'  => 'v' . forum_schema_version(Database::get()),
+            'PHP'              => PHP_VERSION,
+            'Database server'  => $dbVersion,
+            'Web server'       => (string)($_SERVER['SERVER_SOFTWARE'] ?? '—'),
+            'Uploads folder'   => is_dir($uploadDir) && is_writable($uploadDir) ? 'Writable' : 'Not writable',
+        ];
     }
 
     private function stats(): array
@@ -222,8 +249,25 @@ final class AdminController extends Controller
                 $values['logo'] = $logo;
             }
         }
+        if (isset($fields['favicon'])) {
+            [$favicon, $faviconError] = $this->handleFavicon((string)($current['favicon'] ?? ''));
+            if ($faviconError !== null) {
+                $errors[] = $faviconError;
+            } else {
+                $values['favicon'] = $favicon;
+            }
+        }
 
         if ($errors) {
+            // Başka bir alan hata verdiyse bu istekte yüklenen dosyaları yetim bırakma
+            foreach (['logo', 'favicon'] as $k) {
+                if (isset($values[$k]) && $values[$k] !== ($current[$k] ?? '') && $values[$k] !== '') {
+                    $orphan = BASE_DIR . $values[$k];
+                    if (is_file($orphan)) {
+                        unlink($orphan);
+                    }
+                }
+            }
             return [$errors, null];
         }
 
@@ -251,6 +295,18 @@ final class AdminController extends Controller
             $oldLogo = BASE_DIR . $current['logo'];
             if (is_file($oldLogo)) {
                 unlink($oldLogo);
+            }
+        }
+
+        // Değişen faviconun eski dosyasını temizle
+        if (
+            isset($values['favicon'])
+            && ($current['favicon'] ?? '') !== $values['favicon']
+            && preg_match('#^/assets/uploads/[a-f0-9]{32}\.(?:ico|png|jpg|webp|gif|svg)$#', (string)($current['favicon'] ?? ''))
+        ) {
+            $oldFavicon = BASE_DIR . $current['favicon'];
+            if (is_file($oldFavicon)) {
+                unlink($oldFavicon);
             }
         }
 
@@ -310,5 +366,84 @@ final class AdminController extends Controller
         }
 
         return [$currentLogo, null];
+    }
+
+    /**
+     * Favicon yükleme / kaldırma.
+     *
+     * @return array{0: string, 1: ?string} [yeni favicon yolu, hata]
+     */
+    private function handleFavicon(string $currentFavicon): array
+    {
+        $file = $_FILES['site_favicon'] ?? null;
+
+        if (is_array($file) && ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+            if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+                return [$currentFavicon, 'The favicon upload failed. Please try again.'];
+            }
+            if (!is_uploaded_file((string)($file['tmp_name'] ?? '')) || (int)($file['size'] ?? 0) > 1 * 1024 * 1024) {
+                return [$currentFavicon, 'The favicon must be a valid icon/image no larger than 1 MB.'];
+            }
+
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->file((string)$file['tmp_name']);
+            $origName = strtolower((string)($file['name'] ?? ''));
+
+            $extensions = [
+                'image/x-icon'             => 'ico',
+                'image/vnd.microsoft.icon' => 'ico',
+                'image/ico'                => 'ico',
+                'image/icon'               => 'ico',
+                'text/ico'                 => 'ico',
+                'application/ico'          => 'ico',
+                'image/png'                => 'png',
+                'image/jpeg'               => 'jpg',
+                'image/webp'               => 'webp',
+                'image/gif'                => 'gif',
+                'image/svg+xml'            => 'svg',
+            ];
+
+            $ext = $extensions[$mime] ?? null;
+            if ($ext === null && ($mime === 'application/octet-stream' || $mime === 'image/x-ico') && str_ends_with($origName, '.ico')) {
+                $bytes = file_get_contents((string)$file['tmp_name'], false, null, 0, 4);
+                if ($bytes === "\x00\x00\x01\x00") {
+                    $ext = 'ico';
+                }
+            }
+
+            if ($ext === null) {
+                return [$currentFavicon, 'Favicon must be an ICO, PNG, SVG, WebP, or GIF image.'];
+            }
+
+            if ($ext === 'svg') {
+                $svgContent = file_get_contents((string)$file['tmp_name']);
+                if (
+                    $svgContent === false
+                    || preg_match('#<\s*(script|foreignObject|iframe|object|embed|animate|set)\b|<!ENTITY|javascript:|data:text/html|\bon[a-z]+\s*=#i', $svgContent)
+                ) {
+                    return [$currentFavicon, 'SVG favicon contains disallowed scripts or event handlers.'];
+                }
+            }
+
+            $uploadDir = BASE_DIR . '/assets/uploads';
+            if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+                return [$currentFavicon, 'The favicon upload directory could not be created.'];
+            }
+            if (!is_writable($uploadDir)) {
+                return [$currentFavicon, 'The favicon upload directory is not writable by the server.'];
+            }
+
+            $filename = bin2hex(random_bytes(16)) . '.' . $ext;
+            if (!move_uploaded_file((string)$file['tmp_name'], $uploadDir . '/' . $filename)) {
+                return [$currentFavicon, 'The uploaded favicon could not be saved.'];
+            }
+            return ['/assets/uploads/' . $filename, null];
+        }
+
+        if (isset($_POST['remove_favicon'])) {
+            return ['', null];
+        }
+
+        return [$currentFavicon, null];
     }
 }

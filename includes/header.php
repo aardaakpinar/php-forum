@@ -2,7 +2,9 @@
 /** @var PDO $pdo */
 $__user = current_user();
 $__siteSettings = site_settings();
-$__logo = $__siteSettings['logo'];
+$__logo = (string)($__siteSettings['logo'] ?? '');
+$__favicon = (string)($__siteSettings['favicon'] ?? '');
+$__hideName = !empty($__siteSettings['hide_name_with_logo']) && $__logo !== '';
 $__accent = (string)effective_setting('accent');
 $__density = (string)effective_setting('density');
 $__canRegister = $__siteSettings['registration_open'] || User::countAll() === 0;
@@ -39,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'logou
 <title><?= e($pageTitle ?? $__siteSettings['name']) ?></title>
 <link rel="preload" href="/assets/fonts/inter-Regular.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="/assets/css/main.css">
-<?php if ($__logo !== ''): ?>
-<link rel="icon" href="<?= e(url($__logo)) ?>">
+<?php if ($__favicon !== ''): ?>
+<link rel="icon" href="<?= e(url($__favicon)) ?>">
 <?php endif; ?>
 </head>
 <body>
@@ -48,8 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'logou
 <header class="site-header">
     <div class="header-inner">
         <a href="<?= e(url()) ?>" class="brand" aria-label="<?= e($__siteSettings['name']) ?> home">
-            <?php if ($__logo !== ''): ?><img src="<?= e(url($__logo)) ?>" alt="" width="28" height="28" class="brand-logo"><?php endif; ?>
-            <span class="wordmark"><?= e($__siteSettings['name']) ?></span>
+            <?php if ($__logo !== ''): ?><img src="<?= e(url($__logo)) ?>" alt="<?= e($__siteSettings['name']) ?>" class="brand-logo"><?php endif; ?>
+            <?php if (!$__hideName): ?>
+                <span class="wordmark"><?= e($__siteSettings['name']) ?></span>
+            <?php endif; ?>
         </a>
 
         <form class="header-search" method="get" action="<?= e(url('search')) ?>" role="search">

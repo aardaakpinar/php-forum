@@ -12,6 +12,11 @@ define('APP_TAGLINE', getenv('FORUM_TAGLINE') ?: 'A community for open discussio
 
 // ---- Yollar ----
 define('BASE_DIR', __DIR__);
+
+// ---- Sürüm: FORUM_VERSION ortam değişkeni > VERSION dosyası > 'dev' ----
+$__versionFile = is_file(__DIR__ . '/VERSION') ? trim((string)file_get_contents(__DIR__ . '/VERSION')) : '';
+define('APP_VERSION', preg_replace('/[^0-9A-Za-z.+_-]/', '', getenv('FORUM_VERSION') ?: $__versionFile) ?: 'dev');
+unset($__versionFile);
 define('APP_DIR', BASE_DIR . '/app');
 
 // ---- MySQL bağlantı bilgileri ----

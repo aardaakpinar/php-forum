@@ -44,11 +44,13 @@ function site_settings_schema(): array
         'general' => [
             'label' => 'General',
             'icon' => 'globe',
-            'description' => 'Your forum\'s name, tagline and logo.',
+            'description' => 'Your forum\'s name, tagline, branding and icons.',
             'fields' => [
                 'name' => ['type' => 'text', 'label' => 'Site name', 'default' => APP_NAME, 'maxlen' => 60, 'required' => true],
                 'tagline' => ['type' => 'text', 'label' => 'Tagline', 'help' => 'Shown to visitors on the home page.', 'default' => APP_TAGLINE, 'maxlen' => 160],
-                'logo' => ['type' => 'logo', 'label' => 'Logo', 'default' => ''],
+                'logo' => ['type' => 'logo', 'label' => 'Brand logo', 'help' => 'Shown in the site header only. PNG, JPEG, WebP or GIF up to 2 MB.', 'default' => ''],
+                'hide_name_with_logo' => ['type' => 'bool', 'label' => 'Hide site name when brand logo is present', 'help' => 'If enabled and a brand logo is uploaded, the text next to the logo will be hidden in the header.', 'default' => false],
+                'favicon' => ['type' => 'favicon', 'label' => 'Favicon', 'help' => 'Browser tab icon only, independent of the brand logo. ICO, PNG, SVG, WebP or GIF up to 1 MB.', 'default' => ''],
             ],
         ],
         'appearance' => [
@@ -222,7 +224,7 @@ function settings_collect(array $fields, array $input, array &$errors): array
 {
     $values = [];
     foreach ($fields as $key => $def) {
-        if ($def['type'] === 'logo') {
+        if ($def['type'] === 'logo' || $def['type'] === 'favicon') {
             continue;
         }
         $raw = $input[$key] ?? null;
@@ -388,12 +390,21 @@ function render_setting_field(string $key, array $def, bool|int|string $value, s
         case 'logo':
             $preview = '';
             if ((string)$value !== '') {
-                $preview = '<div class="site-logo-preview"><img src="' . e(url((string)$value)) . '" alt="Current site logo" width="48" height="48">'
-                    . '<label class="check-inline"><input type="checkbox" name="remove_logo" value="1"> Use default logo</label></div>';
+                $preview = '<div class="site-logo-preview"><img src="' . e(url((string)$value)) . '" alt="Current brand logo">'
+                    . '<label class="check-inline"><input type="checkbox" name="remove_logo" value="1"> Remove logo</label></div>';
             }
             return '<div class="setting-row stack">' . $text('site-logo')
-                . '<span class="setting-help">PNG, JPEG, WebP or GIF, up to 2 MB.</span>'
                 . '<input id="site-logo" type="file" name="site_logo" accept="image/png,image/jpeg,image/webp,image/gif">'
+                . $preview . '</div>';
+
+        case 'favicon':
+            $preview = '';
+            if ((string)$value !== '') {
+                $preview = '<div class="site-favicon-preview"><img src="' . e(url((string)$value)) . '" alt="Current favicon">'
+                    . '<label class="check-inline"><input type="checkbox" name="remove_favicon" value="1"> Remove favicon</label></div>';
+            }
+            return '<div class="setting-row stack">' . $text('site-favicon')
+                . '<input id="site-favicon" type="file" name="site_favicon" accept=".ico,image/x-icon,image/vnd.microsoft.icon,image/png,image/svg+xml,image/webp,image/gif">'
                 . $preview . '</div>';
 
         default: // text

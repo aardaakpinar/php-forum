@@ -61,7 +61,8 @@ The project features a **custom lightweight MVC framework** written in vanilla P
 - **Dashboard Metrics:** Real-time statistics on total members, threads, replies, and categories.
 - **Category Control:** Create, edit, reorder, or delete discussion categories.
 - **User Management:** View member rosters, change roles, or assign administrative privileges.
-- **Custom Branding:** Upload custom forum logos (PNG, JPEG, WebP, GIF) with strict MIME validation.
+- **Custom Branding:** Upload a header brand logo (PNG, JPEG, WebP, GIF) and, separately, a favicon (ICO, PNG, SVG, WebP, GIF) with strict MIME validation. The two are configured independently under Admin → Settings → General.
+- **Version info:** The admin Overview shows the forum version (from the `VERSION` file or the `FORUM_VERSION` env var), schema version, PHP/database versions and upload-folder status.
 - **Access Control:** Enable **Maintenance Mode** (admin-only access) or **Private Mode** (require authentication to read threads).
 - **Auto-Bootstrapping:** The first registered account automatically becomes the Site Administrator.
 

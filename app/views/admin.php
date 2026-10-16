@@ -1,5 +1,5 @@
 <?php $pageTitle = page_title('Admin'); $__nav = 'admin'; require __DIR__ . '/../../includes/header.php'; ?>
-<div class="page-header"><div><h1>Admin panel</h1><p class="lead">Manage your community.</p></div></div>
+<div class="page-header"><div><h1>Admin panel</h1><p class="lead">Manage your community.</p></div><span class="badge" title="Forum version">v<?= e(ltrim(APP_VERSION, 'v')) ?></span></div>
 
 <div class="tabs tabs-gap">
     <a class="tab<?= $tab === 'overview' ? ' active' : '' ?>" href="<?= e(url('admin')) ?>"><i data-lucide="layout-dashboard"></i>Overview</a>
@@ -30,6 +30,15 @@
         <div class="stat-card"><div class="label">Replies</div><div class="value"><?= number_format($stats['posts']) ?></div><div class="delta">+<?= (int)$stats['posts_week'] ?> this week</div></div>
         <div class="stat-card"><div class="label">Total views</div><div class="value"><?= compact_number((int)$stats['views']) ?></div><div class="label"><?= number_format($stats['likes']) ?> likes</div></div>
     </div>
+
+    <h2 class="section-title">System</h2>
+    <div class="table-wrap"><table class="table system-info">
+        <tbody>
+        <?php foreach ($system as $label => $value): ?>
+            <tr><th scope="row"><?= e($label) ?></th><td><?= e($value) ?></td></tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table></div>
 
     <h2 class="section-title">Latest threads</h2>
     <?php if ($recentThreads): ?>
