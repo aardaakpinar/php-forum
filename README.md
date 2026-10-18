@@ -25,7 +25,6 @@
     - [Option 2: Manual Setup (Apache / Local Environment)](#option-2-manual-setup-apache--local-environment)
 - [Configuration & Environment Variables](#configuration--environment-variables)
 - [First Run & Admin Access](#first-run--admin-access)
-- [Project Status](#project-status)
 - [License](#license)
 
 ---
@@ -239,14 +238,6 @@ The application reads its configuration from system environment variables in `co
 2. Click on **Register** to create an account.
 3. **The very first account registered is automatically granted the `admin` role.**
 4. Once registered, access the administrative dashboard at `/admin` to configure site branding, categories, and moderation settings.
-
----
-
-## Project Status
-
-This project serves as a showcase of clean code architecture, lightweight custom framework patterns, and defensive web application engineering in modern PHP.
-
-It is actively maintained as an educational reference and foundation for lightweight, security-first community discussion systems.
 
 ---
 
