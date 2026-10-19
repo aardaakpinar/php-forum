@@ -1,4 +1,4 @@
-FROM php:8.3-apache-trixie
+FROM php:8.5-apache-trixie
 
 LABEL org.opencontainers.image.title="PHP Forum System" \
       org.opencontainers.image.description="A lightweight, modern, and security-hardened forum built with PHP & MariaDB" \
@@ -10,7 +10,11 @@ LABEL org.opencontainers.image.title="PHP Forum System" \
 # healthcheck için curl, pdo_mysql ve apache modüllerini kur.
 # Derleme araçları (gcc, make vb.) yalnızca pdo_mysql derlemesi için gerekli;
 # işi bitince kaldırılır. Bu hem imaj boyutunu hem de zafiyet sayısını düşürür.
-RUN apt-get update \
+# Her build'de değişir; apt-get upgrade katmanının cache'ten eski haliyle gelmesini engeller
+ARG REFRESH=0
+
+RUN echo "apt refresh: ${REFRESH}" \
+    && apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends curl \
     && docker-php-ext-install pdo_mysql \

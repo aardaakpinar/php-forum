@@ -1,39 +1,39 @@
 services:
-  web:
-    image: aardaakpinar/php-forum:latest
-    build: .
-    ports:
-      - "8080:80"
-    volumes:
-      - uploads_data:/var/www/html/assets/uploads
-    environment:
-      DB_HOST: db
-      DB_PORT: "3306"
-      DB_NAME: forum
-      DB_USER: forum
-      DB_PASS: ${DB_PASS:-str0ng-p4ssw@rd}
-      FORUM_NAME: ${FORUM_NAME:-Forum}
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
+    web:
+        image: aardaakpinar/php-forum:latest
+        build: .
+        ports:
+            - "8080:80"
+        volumes:
+            - uploads_data:/var/www/html/assets/uploads
+        environment:
+            DB_HOST: db
+            DB_PORT: "3306"
+            DB_NAME: forum
+            DB_USER: forum
+            DB_PASS: ${DB_PASS:-str0ng-p4ssw@rd}
+            FORUM_NAME: ${FORUM_NAME:-Forum}
+        depends_on:
+            db:
+                condition: service_healthy
+        restart: unless-stopped
 
-  db:
-    image: mariadb:11
-    environment:
-      MARIADB_DATABASE: forum
-      MARIADB_USER: forum
-      MARIADB_PASSWORD: ${DB_PASS:-str0ng-p4ssw@rd}
-      MARIADB_RANDOM_ROOT_PASSWORD: "1"
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-    restart: unless-stopped
+    db:
+        image: mariadb:11.8
+        environment:
+            MARIADB_DATABASE: forum
+            MARIADB_USER: forum
+            MARIADB_PASSWORD: ${DB_PASS:-str0ng-p4ssw@rd}
+            MARIADB_RANDOM_ROOT_PASSWORD: "1"
+        volumes:
+            - db_data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            interval: 5s
+            timeout: 5s
+            retries: 20
+        restart: unless-stopped
 
 volumes:
-  db_data:
-  uploads_data:
+    db_data:
+    uploads_data:
