@@ -1,4 +1,4 @@
-FROM php:8.3-apache
+FROM php:8.3-apache-trixie
 
 LABEL org.opencontainers.image.title="PHP Forum System" \
       org.opencontainers.image.description="A lightweight, modern, and security-hardened forum built with PHP & MariaDB" \
@@ -6,14 +6,20 @@ LABEL org.opencontainers.image.title="PHP Forum System" \
       org.opencontainers.image.source="https://github.com/aardaakpinar/php-forum" \
       org.opencontainers.image.licenses="MIT"
 
-# Sistem bağımlılıklarını kur (healthcheck için curl, pdo_mysql ve apache modülleri)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/* \
+# Sistem paketlerini güncelle (base image'dan sonra çıkan güvenlik yamaları),
+# healthcheck için curl, pdo_mysql ve apache modüllerini kur.
+# Derleme araçları (gcc, make vb.) yalnızca pdo_mysql derlemesi için gerekli;
+# işi bitince kaldırılır. Bu hem imaj boyutunu hem de zafiyet sayısını düşürür.
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends curl \
     && docker-php-ext-install pdo_mysql \
     && a2enmod rewrite headers \
     && sed -ri 's!AllowOverride None!AllowOverride All!g' /etc/apache2/apache2.conf \
-    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && apt-get purge -y --auto-remove $PHPIZE_DEPS \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Uygulama kaynak kodlarını kopyala
 WORKDIR /var/www/html
