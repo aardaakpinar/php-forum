@@ -18,6 +18,7 @@
 
 - [Overview](#overview)
 - [Key Features](#key-features)
+- [Screenshots](#screenshots)
 - [Security Architecture & Hardening](#security-architecture--hardening)
 - [Installation & Setup](#installation--setup)
     - [Requirements](#requirements)
@@ -74,6 +75,19 @@ The project features a **custom lightweight MVC framework** written in vanilla P
 
 ---
 
+## Screenshots
+
+<div align="center">
+
+<img src="docs/screenshots/home.png" alt="Home page with thread list, category sidebar and forum stats" width="100%">
+
+<img src="docs/screenshots/thread.png" alt="Thread page with moderation toolbar and reply editor" height="380">
+<img src="docs/screenshots/profile-mobile.png" alt="Profile page on a mobile viewport" height="380">
+
+</div>
+
+---
+
 ## Security Architecture & Hardening
 
 Security is treated as a first-class requirement across every layer of the application:
@@ -98,7 +112,7 @@ Security is treated as a first-class requirement across every layer of the appli
 ### Requirements
 
 - **PHP:** 8.1 or higher (PHP 8.3 recommended)
-- **Web Server:** Apache (with `mod_rewrite` and `mod_headers` enabled)
+- **Web Server:** Apache (with `mod_rewrite` and `mod_headers` enabled), **or** Nginx + PHP-FPM (see [Option 3](#option-3-apache-free-manual-setup))
 - **Database:** MySQL 5.7+ or MariaDB 10.3+ (InnoDB engine required)
 - **PHP Extensions:** `pdo`, `pdo_mysql`, `fileinfo`
 - **SSL / HTTPS:** Strongly recommended for production environments
@@ -108,71 +122,76 @@ Security is treated as a first-class requirement across every layer of the appli
 ### Option 1: Docker Compose (Recommended)
 
 #### A. Run with Pre-built Docker Hub Image (Zero-Clone Setup)
+
 You don't need to clone the repository. Simply create a `docker-compose.yml` file:
 
 ```yaml
 services:
-  web:
-    image: aardaakpinar/php-forum:latest
-    ports:
-      - "8080:80"
-    volumes:
-      - uploads_data:/var/www/html/assets/uploads
-    environment:
-      DB_HOST: db
-      DB_PORT: "3306"
-      DB_NAME: forum
-      DB_USER: forum
-      DB_PASS: str0ng-p4ssw@rd
-      FORUM_NAME: "My Community Forum"
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
+    web:
+        image: aardaakpinar/php-forum:latest
+        ports:
+            - "8080:80"
+        volumes:
+            - uploads_data:/var/www/html/assets/uploads
+        environment:
+            DB_HOST: db
+            DB_PORT: "3306"
+            DB_NAME: forum
+            DB_USER: forum
+            DB_PASS: str0ng-p4ssw@rd
+            FORUM_NAME: "My Community Forum"
+        depends_on:
+            db:
+                condition: service_healthy
+        restart: unless-stopped
 
-  db:
-    image: mariadb:11
-    environment:
-      MARIADB_DATABASE: forum
-      MARIADB_USER: forum
-      MARIADB_PASSWORD: str0ng-p4ssw@rd
-      MARIADB_RANDOM_ROOT_PASSWORD: "1"
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-    restart: unless-stopped
+    db:
+        image: mariadb:11
+        environment:
+            MARIADB_DATABASE: forum
+            MARIADB_USER: forum
+            MARIADB_PASSWORD: str0ng-p4ssw@rd
+            MARIADB_RANDOM_ROOT_PASSWORD: "1"
+        volumes:
+            - db_data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+            interval: 5s
+            timeout: 5s
+            retries: 20
+        restart: unless-stopped
 
 volumes:
-  db_data:
-  uploads_data:
+    db_data:
+    uploads_data:
 ```
 
 Then start the stack:
+
 ```bash
 docker compose up -d
 ```
 
 #### B. Build & Run from Source (Developers)
+
 1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/aardaakpinar/php-forum.git
-   cd php-forum
-   ```
+    ```bash
+    git clone https://github.com/aardaakpinar/php-forum.git
+    cd php-forum
+    ```
 2. **Start the containers:**
-   ```bash
-   docker compose up --build -d
-   ```
+
+    ```bash
+    docker compose up --build -d
+    ```
 
 3. **Access the application:**
-   - Open [http://localhost:8080](http://localhost:8080) in your browser.
-   - The MariaDB database container automatically initializes with health checks.
-   - Database tables are automatically migrated on your first visit.
+    - Open [http://localhost:8080](http://localhost:8080) in your browser.
+    - The MariaDB database container automatically initializes with health checks.
+    - Database tables are automatically migrated on your first visit.
 
 To stop the containers:
+
 ```bash
 docker compose down
 ```
