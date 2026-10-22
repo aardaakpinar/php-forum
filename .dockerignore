@@ -10,3 +10,7 @@ assets/uploads/*
 *.tar.gz
 *.md
 LICENSE
+.env
+.env.*
+*.pem
+*.key

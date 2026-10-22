@@ -22,6 +22,8 @@ RUN echo "apt refresh: ${REFRESH}" \
     && sed -ri 's!AllowOverride None!AllowOverride All!g' /etc/apache2/apache2.conf \
     && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && apt-get purge -y --auto-remove $PHPIZE_DEPS \
+    && pkgs="$(dpkg-query -W -f='${Package} ' libc6-dev libc-dev-bin linux-libc-dev 2>/dev/null || true)" \
+    && if [ -n "$pkgs" ]; then apt-get purge -y --auto-remove $pkgs; fi \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -39,8 +41,34 @@ RUN { \
         echo 'exec "$@"'; \
     } > /usr/local/bin/docker-entrypoint.sh \
     && chmod +x /usr/local/bin/docker-entrypoint.sh \
+    && chown root:root /var/www/html \
+    && chmod -R go-w /var/www/html \
     && mkdir -p /var/www/html/assets/uploads \
-    && chown -R www-data:www-data /var/www/html
+    && chown www-data:www-data /var/www/html/assets/uploads \
+    && chmod 775 /var/www/html/assets/uploads
+
+# Uygulama kodu root sahipliğinde ve salt okunur kalır; yalnızca uploads dizini
+# www-data tarafından yazılabilir. (Resmî imaj /var/www/html'i www-data sahipli
+# ve 1777 bırakır; dizinin kendisi de root'a alınmazsa www-data dosya silip yeniden
+# oluşturabilir.) Yüklenen dosyalarda PHP çalıştırmayı Apache
+# seviyesinde de engelle (savunma katmanı).
+RUN { \
+        echo '<Directory /var/www/html/assets/uploads>'; \
+        echo '    <IfModule mod_php.c>'; \
+        echo '        php_admin_flag engine off'; \
+        echo '    </IfModule>'; \
+        echo '    <FilesMatch "\.(?:php[0-9]?|phtml|phar)$">'; \
+        echo '        Require all denied'; \
+        echo '    </FilesMatch>'; \
+        echo '</Directory>'; \
+    } > /etc/apache2/conf-available/no-php-uploads.conf \
+    && a2enconf no-php-uploads
+
+# Derleme sonrası temizlik bir şeyi bozduysa build burada durur:
+# PHP çalışıyor mu, pdo_mysql yüklü mü, Apache yapılandırması geçerli mi?
+RUN php -v >/dev/null \
+    && php -m | grep -qix 'pdo_mysql' \
+    && apache2ctl -t
 
 EXPOSE 80
 

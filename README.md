@@ -138,7 +138,7 @@ services:
             DB_PORT: "3306"
             DB_NAME: forum
             DB_USER: forum
-            DB_PASS: str0ng-p4ssw@rd
+            DB_PASS: ${DB_PASS:?set DB_PASS}
             FORUM_NAME: "My Community Forum"
         depends_on:
             db:
@@ -150,7 +150,7 @@ services:
         environment:
             MARIADB_DATABASE: forum
             MARIADB_USER: forum
-            MARIADB_PASSWORD: str0ng-p4ssw@rd
+            MARIADB_PASSWORD: ${DB_PASS:?set DB_PASS}
             MARIADB_RANDOM_ROOT_PASSWORD: "1"
         volumes:
             - db_data:/var/lib/mysql
